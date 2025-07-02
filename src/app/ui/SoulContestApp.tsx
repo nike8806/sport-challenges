@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Users, Trophy, Calendar, Plus, Award, Flame, Wind, Droplets } from 'lucide-react';
+import LoginForm from './LoginForm';
 
 // Tipos TypeScript
 interface Participant {
@@ -28,9 +29,17 @@ interface Entry {
   groupSize?: number; // Para salidas con equipo
 }
 
+const pageStates = {
+  startSession: 'login',  
+  isStaff: 'isStaff',
+  isPublic: 'isPublic',
+} as const;
+type pageStatesKeys =keyof typeof pageStates;
+type pageStatesEnum = typeof pageStates[pageStatesKeys];
+
 const SoulContestApp: React.FC = () => {
   // Estados
-  const [isStaff, setIsStaff] = useState(false);
+  const [pageState, setPageState] = useState<pageStatesEnum>(pageStates.isPublic);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [participants, setParticipants] = useState<Participant[]>([
@@ -188,26 +197,14 @@ const SoulContestApp: React.FC = () => {
       )}
 
       {/* Staff Login */}
-      {!isStaff && (
+      {pageState === pageStates.startSession && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
           <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full mx-4">
             <h2 className="text-2xl font-bold text-center mb-6">Soul Contest</h2>
             <div className="space-y-4">
-              <button
-                onClick={() => setIsStaff(true)}
-                className="w-full bg-purple-600 text-white py-3 px-4 rounded-md hover:bg-purple-700 transition-colors font-semibold"
-              >
-                Acceso Staff
-              </button>
-              <button
-                onClick={() => {
-                  setIsStaff(false);
-                  setActiveTab('dashboard');
-                }}
-                className="w-full bg-gray-600 text-white py-3 px-4 rounded-md hover:bg-gray-700 transition-colors font-semibold"
-              >
-                Vista Pública
-              </button>
+
+
+                <LoginForm onSuccesAccess={() => setPageState(pageStates.isStaff)} />
             </div>
           </div>
         </div>
@@ -229,9 +226,17 @@ const SoulContestApp: React.FC = () => {
                 <Calendar className="w-4 h-4" />
                 <span>Duración: 2 meses</span>
               </div>
-              {isStaff && (
+              {pageState === pageStates.isPublic && (
                 <button
-                  onClick={() => setIsStaff(false)}
+                  onClick={() => setPageState(pageStates.startSession)}
+                  className="bg-purple-700 hover:bg-purple-800 px-3 py-1 rounded text-sm transition-colors"
+                >
+                  Iniciar Sesión
+                </button>
+              )}
+              {pageState === pageStates.isStaff && (
+                <button
+                  onClick={() => setPageState(pageStates.isPublic)}
                   className="bg-purple-700 hover:bg-purple-800 px-3 py-1 rounded text-sm transition-colors"
                 >
                   Cerrar Sesión
@@ -257,7 +262,7 @@ const SoulContestApp: React.FC = () => {
               <Award className="w-4 h-4" />
               <span>Clasificación</span>
             </button>
-            {isStaff && (
+            {pageState === pageStates.isStaff && (
               <button
                 onClick={() => setActiveTab('register')}
                 className={`flex items-center space-x-2 px-4 py-4 border-b-2 font-medium text-sm transition-colors ${
@@ -305,6 +310,7 @@ const SoulContestApp: React.FC = () => {
                 </div>
               </div>
             </div>
+            
 
             {/* Top 10 Individual */}
             <div className="bg-white rounded-lg shadow-md">
@@ -323,9 +329,6 @@ const SoulContestApp: React.FC = () => {
                             {index + 1}
                           </div>
                           <div>
-                  </div>
-
-                  <div>
                             <span className="font-medium">{participant.name}</span>
                             <div className="flex items-center space-x-1 text-sm">
                               {getTeamIcon(participant.team)}
