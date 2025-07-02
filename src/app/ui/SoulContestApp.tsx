@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Trophy, Calendar, Plus, Award, Target, Flame, Wind, Droplets } from 'lucide-react';
+import { Users, Trophy, Calendar, Plus, Award, Flame, Wind, Droplets } from 'lucide-react';
 
 // Tipos TypeScript
 interface Participant {
@@ -162,14 +162,14 @@ const SoulContestApp: React.FC = () => {
     }
   };
 
-  const getTeamColor = (team: string) => {
-    switch (team) {
-      case 'Agua': return 'from-blue-500 to-blue-600';
-      case 'Fuego': return 'from-red-500 to-red-600';
-      case 'Viento': return 'from-green-500 to-green-600';
-      default: return 'from-gray-500 to-gray-600';
-    }
-  };
+//   const getTeamColor = (team: string) => {
+//     switch (team) {
+//       case 'Agua': return 'from-blue-500 to-blue-600';
+//       case 'Fuego': return 'from-red-500 to-red-600';
+//       case 'Viento': return 'from-green-500 to-green-600';
+//       default: return 'from-gray-500 to-gray-600';
+//     }
+//   };
 
   const teamStats = getTeamStats();
 
